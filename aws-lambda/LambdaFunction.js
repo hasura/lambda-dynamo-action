@@ -19,7 +19,6 @@ export async function handler(event) {
 
    try {
       const {Item} = await docClient.send(new GetCommand(params));
-
       return Item
          ? {statusCode: 200, body: JSON.stringify(Item)}
          : {statusCode: 404, body: JSON.stringify({message: 'Item not found'})};
