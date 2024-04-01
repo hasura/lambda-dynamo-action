@@ -1,0 +1,17 @@
+type Query {
+  getDocument(
+    arg1: SampleInput!
+  ): SampleOutput
+}
+
+input SampleInput {
+  partition_key: String
+}
+
+type SampleOutput {
+  content_id: String
+  description: String
+  partition_key: String
+  related_content_ids: [String]
+}
+

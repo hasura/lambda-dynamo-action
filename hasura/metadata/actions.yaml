@@ -1,0 +1,23 @@
+actions:
+  - name: getDocument
+    definition:
+      kind: ""
+      handler: https://hmhmbrtxd6.execute-api.us-west-1.amazonaws.com/test/fetchDocument
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+              "partition_key": {{$body.input.arg1.partition_key}}
+            }
+        template_engine: Kriti
+        version: 2
+    permissions:
+      - role: user
+custom_types:
+  enums: []
+  input_objects:
+    - name: SampleInput
+  objects:
+    - name: SampleOutput
+  scalars: []
