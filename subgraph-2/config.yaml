@@ -1,4 +1,4 @@
 version: 3
 endpoint: http://localhost:8082
+metadata_directory: metadata
 admin_secret: myadminsecretkey
-metadata_directory: subgraph2_metadata
