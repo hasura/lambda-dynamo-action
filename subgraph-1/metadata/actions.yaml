@@ -18,6 +18,7 @@ custom_types:
   enums: []
   input_objects:
     - name: SampleInput
+    - name: PartitionKey
   objects:
     - name: SampleOutput
   scalars: []

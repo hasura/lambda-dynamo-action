@@ -1,27 +1,57 @@
 version: '3.6'
 services:
+  redis:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
   postgres:
     image: postgres
     restart: always
     ports:
     - "5432:5432"
     volumes:
-    - db_data:/var/lib/postgresql/data
+    - pg_data:/var/lib/postgresql/data
+    - ./supergraph/data-init/:/docker-entrypoint-initdb.d/
     environment:
-      POSTGRES_PASSWORD: postgrespassword
-  graphql-engine:
+      POSTGRES_PASSWORD: postgrespassword # users: hasura, postgres (admin)
+  supergraph:
     image: hasura/graphql-engine:latest
     ports:
     - "8080:8080"
     depends_on:
+    - "redis"
     - "postgres"
     restart: always
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:postgrespassword@host.docker.internal:5432/postgres
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
-      ## uncomment next line to set an admin secret
       HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
       HASURA_GRAPHQL_EE_LICENSE_KEY: ${HASURA_GRAPHQL_EE_LICENSE_KEY}
-
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:postgrespassword@host.docker.internal:5432/supergraph_metadata
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
+      HASURA_GRAPHQL_REDIS_URL: "redis://redis:6379" # to enable response caching
+  subgraph_1:
+    image: hasura/graphql-engine:latest
+    ports:
+    - "8081:8080"
+    depends_on:
+    - "postgres"
+    restart: always
+    environment:
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+      HASURA_GRAPHQL_EE_LICENSE_KEY: ${HASURA_GRAPHQL_EE_LICENSE_KEY}
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:postgrespassword@host.docker.internal:5432/subgraph1_metadata
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"     
+  subgraph_2:
+    image: hasura/graphql-engine:latest
+    ports:
+    - "8082:8080"
+    depends_on:
+    - "postgres"
+    restart: always
+    environment:
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+      HASURA_GRAPHQL_EE_LICENSE_KEY: ${HASURA_GRAPHQL_EE_LICENSE_KEY}
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: postgres://postgres:postgrespassword@host.docker.internal:5432/subgraph2_metadata
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"      
 volumes:
-  db_data:
+  pg_data:

@@ -1,10 +1,14 @@
 type Query {
   getDocument(
-    arg1: SampleInput!
+    arg1: PartitionKey!
   ): SampleOutput
 }
 
 input SampleInput {
+  partition_key: String
+}
+
+input PartitionKey {
   partition_key: String
 }
 
