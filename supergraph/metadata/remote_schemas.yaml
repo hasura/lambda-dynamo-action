@@ -1,1 +1,32 @@
-[]
+- name: Content_Subgraph_2
+  definition:
+    url: http://host.docker.internal:8082/v1/graphql
+    timeout_seconds: 60
+    customization: {}
+    headers:
+      - name: x-hasura-admin-secret
+        value: myadminsecretkey
+  comment: ""
+- name: UUID_Subgraph_1
+  definition:
+    url: http://host.docker.internal:8081/v1/graphql
+    timeout_seconds: 60
+    customization: {}
+    headers:
+      - name: x-hasura-admin-secret
+        value: myadminsecretkey
+  comment: ""
+  remote_relationships:
+    - relationships:
+        - definition:
+            to_remote_schema:
+              lhs_fields:
+                - content_id
+              remote_field:
+                getContent:
+                  arguments:
+                    arg1:
+                      content_uuid: $content_id
+              remote_schema: Content_Subgraph_2
+          name: joinContent
+      type_name: SampleOutput

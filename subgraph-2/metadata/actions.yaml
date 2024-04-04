@@ -1,6 +1,54 @@
-actions: []
+actions:
+  - name: getContent
+    definition:
+      kind: ""
+      handler: https://xa3omm6xod.execute-api.us-west-1.amazonaws.com/test/fetchContent
+      request_transform:
+        body:
+          action: transform
+          template: |-
+            {
+              "content_uuid": {{$body.input.arg1.content_uuid}}
+            }
+        template_engine: Kriti
+        version: 2
+      response_transform:
+        body:
+          action: transform
+          template: |-
+            {{ if $response.status == 200 }}
+              {{ range _, x := $body }}
+                {
+                 "content_uuid": {{x.content_uuid.S}},
+                  "example_content_field": {{x.example_content_field.S}},
+                  "another_content_field": {{x.another_content_field.S}},
+                  "part_key": {{x.part_key.S}},
+                  "sort_key": {{x.sort_key.S}}
+                }
+              {{ end }}
+            {{ elif $response.status == 400 }}
+              {
+                "message": {{$body.error}}
+              }
+            {{ else }}
+              {
+                "message" : "internal error"
+              }
+            {{ end }}
+        template_engine: Kriti
+        version: 2
 custom_types:
   enums: []
-  input_objects: []
-  objects: []
+  input_objects:
+    - name: SampleInput
+    - name: PartitionKey
+    - name: ContentId
+  objects:
+    - name: SampleOutput
+    - name: AnotherContentField
+    - name: ContentUuid
+    - name: ExampleContentField
+    - name: PartKey
+    - name: SortKey
+    - name: ContentOutput
   scalars: []

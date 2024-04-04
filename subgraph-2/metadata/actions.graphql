@@ -1,0 +1,54 @@
+type Query {
+  getContent(
+    arg1: ContentId!
+  ): [ContentOutput]
+}
+
+input SampleInput {
+  partition_key: String
+}
+
+input PartitionKey {
+  partition_key: String
+}
+
+input ContentId {
+  content_uuid: String!
+}
+
+type SampleOutput {
+  another_content_field: String
+  content_uuid: String
+  example_content_field: String
+  part_key: String
+  sort_key: String
+}
+
+type AnotherContentField {
+  S: String
+}
+
+type ContentUuid {
+  S: String
+}
+
+type ExampleContentField {
+  S: String
+}
+
+type PartKey {
+  S: String
+}
+
+type SortKey {
+  S: String
+}
+
+type ContentOutput {
+  another_content_field: String
+  content_uuid: String
+  example_content_field: String
+  part_key: String
+  sort_key: String
+}
+
